@@ -555,7 +555,7 @@ pub(crate) enum SchemaError {
 /// Collection of schema validation errors.
 #[derive(Debug)]
 pub(crate) struct ParseErrors {
-    pub(crate) errors: apollo_compiler::Diagnostics,
+    pub(crate) errors: apollo_compiler::DiagnosticList,
 }
 
 impl std::fmt::Display for ParseErrors {
@@ -578,7 +578,7 @@ impl std::fmt::Display for ParseErrors {
 /// Collection of schema validation errors.
 #[derive(Debug)]
 pub(crate) struct ValidationErrors {
-    pub(crate) errors: apollo_compiler::Diagnostics,
+    pub(crate) errors: apollo_compiler::DiagnosticList,
 }
 
 impl IntoGraphQLErrors for ValidationErrors {

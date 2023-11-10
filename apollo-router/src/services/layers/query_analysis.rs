@@ -109,7 +109,7 @@ impl QueryAnalysisLayer {
                     .executable
                     .get_operation(op_name.as_deref())
                     .ok()
-                    .and_then(|operation| operation.name().map(|s| s.as_str().to_owned()));
+                    .and_then(|operation| operation.name.as_ref().map(|s| s.to_string()));
 
                 context.insert(OPERATION_NAME, operation_name).unwrap();
 

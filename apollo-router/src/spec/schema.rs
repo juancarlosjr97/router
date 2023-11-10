@@ -7,7 +7,7 @@ use std::sync::Arc;
 use std::time::Instant;
 
 use apollo_compiler::ast;
-use apollo_compiler::Diagnostics;
+use apollo_compiler::DiagnosticList;
 use http::Uri;
 use sha2::Digest;
 use sha2::Sha256;
@@ -25,7 +25,7 @@ pub(crate) struct Schema {
     pub(crate) raw_sdl: Arc<String>,
     pub(crate) definitions: apollo_compiler::Schema,
     /// Stored for comparison with the validation errors from query planning.
-    diagnostics: Option<Diagnostics>,
+    diagnostics: Option<DiagnosticList>,
     subgraphs: HashMap<String, Uri>,
     pub(crate) implementers_map: HashMap<ast::Name, HashSet<ast::Name>>,
     api_schema: Option<Box<Schema>>,

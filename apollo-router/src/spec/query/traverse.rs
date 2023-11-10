@@ -154,7 +154,10 @@ fn selection_set(
         }
         ast::Selection::FragmentSpread(def) => visitor.fragment_spread(def),
         ast::Selection::InlineFragment(def) => {
-            let fragment_type = def.type_condition.as_deref().unwrap_or(parent_type);
+            let fragment_type = def
+                .type_condition
+                .map(|name| name.as_str())
+                .unwrap_or(parent_type);
             visitor.inline_fragment(fragment_type, def)
         }
     })

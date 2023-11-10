@@ -11,6 +11,7 @@ use apollo_compiler::ast;
 use apollo_compiler::executable;
 use apollo_compiler::schema::ExtendedType;
 use apollo_compiler::ExecutableDocument;
+use apollo_compiler::Node;
 use derivative::Derivative;
 use indexmap::IndexSet;
 use serde::Deserialize;
@@ -1081,11 +1082,11 @@ pub(crate) struct Variable {
 
 impl Operation {
     pub(crate) fn from_hir(
-        operation: executable::OperationRef<'_>,
+        operation: &Node<executable::Operation>,
         schema: &Schema,
         defer_stats: &mut DeferStats,
     ) -> Result<Self, SpecError> {
-        let name = operation.name().map(|s| s.as_str().to_owned());
+        let name = operation.name.clone().map(|s| s.as_str().to_owned());
         let kind = operation.operation_type.into();
         let type_name = schema.root_operation_name(kind).to_owned();
         let selection_set = operation

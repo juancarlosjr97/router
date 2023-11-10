@@ -227,7 +227,11 @@ pub(crate) fn selection_set(
                 }
             }
             ast::Selection::InlineFragment(def) => {
-                let fragment_type = def.type_condition.as_deref().unwrap_or(parent_type);
+                let fragment_type = def
+                    .type_condition
+                    .as_ref()
+                    .map(|name| name.as_str())
+                    .unwrap_or(parent_type);
                 if let Some(sel) = visitor.inline_fragment(fragment_type, def)? {
                     selections.push(ast::Selection::InlineFragment(sel.into()))
                 }
@@ -266,7 +270,7 @@ fn test_add_directive_to_fields() {
             Ok(field(self, field_def, def)?.map(|mut new| {
                 new.directives.push(
                     ast::Directive {
-                        name: "added".into(),
+                        name: apollo_compiler::name!("added"),
                         arguments: Vec::new(),
                     }
                     .into(),

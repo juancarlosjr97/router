@@ -11,7 +11,7 @@ use crate::spec::query::transform;
 use crate::spec::query::transform::document;
 use crate::spec::query::transform::Visitor;
 
-const LABEL_NAME: &str = "label";
+const LABEL_NAME: ast::Name = apollo_compiler::name!("label");
 
 /// go through the query and adds labels to defer fragments that do not have any
 ///

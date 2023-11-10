@@ -1,3 +1,4 @@
+use apollo_compiler::ast;
 use apollo_compiler::schema;
 use serde::Deserialize;
 use serde::Serialize;
@@ -65,9 +66,10 @@ impl<'de> Deserialize<'de> for FieldType {
             NonNullList(FieldType),
         }
         WithoutLocation::deserialize(deserializer).map(|ty| match ty {
-            WithoutLocation::Named(name) => FieldType(schema::Type::new_named(&name)),
+            WithoutLocation::Named(name) => FieldType::new_named(&name),
             WithoutLocation::NonNullNamed(name) => {
-                FieldType(schema::Type::new_named(&name).non_null())
+                let name = ast::Name::new_unchecked(name.into());
+                FieldType(schema::Type::NonNullNamed(name))
             }
             WithoutLocation::List(ty) => FieldType(ty.0.list()),
             WithoutLocation::NonNullList(ty) => FieldType(ty.0.list().non_null()),
@@ -158,7 +160,8 @@ fn validate_input_value(
 
 impl FieldType {
     pub(crate) fn new_named(name: &str) -> Self {
-        Self(schema::Type::new_named(name))
+        let name = ast::Name::new_unchecked(name.into());
+        Self(schema::Type::Named(name))
     }
 
     // This function validates input values according to the graphql specification.
@@ -185,7 +188,11 @@ impl From<&'_ schema::Type> for FieldType {
 /// Make sure custom Serialize and Deserialize impls are compatible with each other
 #[test]
 fn test_field_type_serialization() {
-    let ty = FieldType(schema::Type::new_named("ID").list().non_null());
+    let ty = FieldType(
+        schema::Type::Named(apollo_compiler::name!("ID"))
+            .list()
+            .non_null(),
+    );
     assert_eq!(
         serde_json::from_str::<FieldType>(&serde_json::to_string(&ty).unwrap()).unwrap(),
         ty
